@@ -1,18 +1,12 @@
 import Link from "next/link";
 import MaxWidthWrapper from "./MaxWidthWrapper";
 import { buttonVariants } from "./ui/button";
-// import {
-//   LoginLink,
-//   RegisterLink,
-//   getKindeServerSession,
-// } from "@kinde-oss/kinde-auth-nextjs/server";
-import { ArrowRight } from "lucide-react";
+import { LoginButton } from "@/core/Auth/Auth";
+import { cn } from "@/lib/utils";
 // import UserAccountNav from "./UserAccountNav";
 // import MobileNav from "./MobileNav";
 
 const Navbar = () => {
-  //   const { getUser } = getKindeServerSession();
-  //   const user = getUser();
   const user = null;
 
   return (
@@ -30,13 +24,17 @@ const Navbar = () => {
               <>
                 <Link
                   href="/get-started"
-                  className={buttonVariants({
-                    variant: "ghost",
-                    size: "sm",
-                  })}
+                  className={cn(
+                    buttonVariants({
+                      variant: "ghost",
+                      size: "sm",
+                    }),
+                  )}
                 >
                   Get Started
                 </Link>
+                <LoginButton />
+
                 {/* <LoginLink
                   className={buttonVariants({
                     variant: "ghost",
@@ -56,7 +54,7 @@ const Navbar = () => {
             ) : (
               <>
                 <Link
-                  href="/dashboard"
+                  href="/"
                   className={buttonVariants({
                     variant: "ghost",
                     size: "sm",
