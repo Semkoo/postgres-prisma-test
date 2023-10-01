@@ -2,6 +2,7 @@ import prisma from "@/lib/prisma";
 import { compare } from "bcrypt";
 import NextAuth, { type NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GithubProvider from "next-auth/providers/github";
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -33,6 +34,11 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
+        // if user created with github, don't allow login with email and password
+        if (user.password === null) {
+          return null;
+        }
+
         const isPasswordValid = await compare(
           credentials.password,
           user.password,
@@ -46,9 +52,13 @@ export const authOptions: NextAuthOptions = {
           id: user.id + "",
           email: user.email,
           name: user.name,
-          randomKey: "Hey cool",
+          image: user.image,
         };
       },
+    }),
+    GithubProvider({
+      clientId: process.env.GITHUB_CLIENT_ID ?? "",
+      clientSecret: process.env.GITHUB_CLIENT_SECRET ?? "",
     }),
   ],
   callbacks: {
@@ -59,7 +69,6 @@ export const authOptions: NextAuthOptions = {
         user: {
           ...session.user,
           id: token.id,
-          randomKey: token.randomKey,
         },
       };
     },

@@ -29,13 +29,13 @@ const Navbar = () => {
             {!user ? (
               <>
                 <Link
-                  href="/pricing"
+                  href="/get-started"
                   className={buttonVariants({
                     variant: "ghost",
                     size: "sm",
                   })}
                 >
-                  Pricing
+                  Get Started
                 </Link>
                 {/* <LoginLink
                   className={buttonVariants({
