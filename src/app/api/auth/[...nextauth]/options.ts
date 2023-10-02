@@ -1,4 +1,4 @@
-import prisma from "prisma/prismaORM";
+import prisma from "~/prismaORM";
 import type { NextAuthOptions } from "next-auth";
 import GitHubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";

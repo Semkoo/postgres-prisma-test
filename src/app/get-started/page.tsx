@@ -1,10 +1,13 @@
 import { ContactForm } from "~/core/GetStarted/ContactForm";
 import { getLead } from "~/core/GetStarted/actions";
 
-import React from "react";
+// Prisma does not support Edge without the Data Proxy currently
+// export const runtime = 'edge'
+export const dynamic = "force-dynamic";
 
 export default async function ContactPage() {
   const { data } = await getLead();
+
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-semibold">Step 1: Contact Info</h1>

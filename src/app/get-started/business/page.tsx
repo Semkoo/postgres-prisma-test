@@ -4,6 +4,8 @@ import { EnumStepStatus } from "@prisma/client";
 import { redirect } from "next/navigation";
 import React from "react";
 
+export const dynamic = "force-dynamic";
+
 export default async function BusinessPage() {
   const { data } = await getLead();
 
@@ -16,10 +18,10 @@ export default async function BusinessPage() {
       <h1 className="text-3xl font-semibold">Step 2: Business Info</h1>
       <BusinessForm
         business={{
-          businessName: data?.businessName || "",
-          businessCity: data?.businessCity || "",
-          businessWebsite: data?.businessWebsite || "",
-          businessEmail: data?.businessEmail || "",
+          businessName: data?.businessName ?? "",
+          businessCity: data?.businessCity ?? "",
+          businessWebsite: data?.businessWebsite ?? "",
+          businessEmail: data?.businessEmail ?? "",
         }}
       />
     </div>

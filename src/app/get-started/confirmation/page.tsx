@@ -5,6 +5,8 @@ import { EnumStepStatus } from "@prisma/client";
 import { redirect } from "next/navigation";
 import React from "react";
 
+export const dynamic = "force-dynamic";
+
 export default async function ConfirmationPage() {
   const { data } = await getLead();
 
@@ -15,7 +17,7 @@ export default async function ConfirmationPage() {
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-semibold">Confirmation</h1>
-      <ConfirmationForm lead={{ ...(data as ConfirmationValidationSchema) }} />
+      <ConfirmationForm lead={data as ConfirmationValidationSchema} />
     </div>
   );
 }

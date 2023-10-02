@@ -29,9 +29,9 @@ const initialState: ConfirmationValidationSchema = {
 };
 
 export function ConfirmationForm({
-  lead,
+  lead = initialState,
 }: {
-  lead: ConfirmationValidationSchema;
+  lead?: ConfirmationValidationSchema;
 }) {
   const router = useRouter();
   const pathname = usePathname();

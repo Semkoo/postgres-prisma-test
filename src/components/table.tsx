@@ -1,4 +1,4 @@
-import prisma from "prisma/prismaORM";
+import prisma from "~/prismaORM";
 import { timeAgo } from "~/lib/utils";
 import Image from "next/image";
 import RefreshButton from "./refresh-button";

@@ -1,4 +1,4 @@
-import prismaORM from "./prismaORM";
+import prismaORM from "../src/prismaORM";
 
 async function main() {
   const response = await Promise.all([

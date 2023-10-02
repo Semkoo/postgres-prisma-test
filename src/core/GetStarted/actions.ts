@@ -1,10 +1,10 @@
 "use server";
 
-import { EnumStepStatus } from "@prisma/client";
+import { EnumStepStatus, Lead } from "@prisma/client";
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 
-import prismaORM from "prisma/prismaORM";
+import prismaORM from "~/prismaORM";
 import {
   BusinessValidationSchema,
   ConfirmationValidationSchema,
@@ -18,7 +18,10 @@ import {
 
 const COOKIE_LEAD_ID = "leadId";
 
-export async function getLead() {
+export async function getLead(): Promise<{
+  data: Lead | null;
+  message: string;
+}> {
   try {
     const leadId = cookies().get(COOKIE_LEAD_ID)?.value;
 
@@ -50,7 +53,10 @@ export async function getLead() {
 export async function updateLead(
   data: ConfirmationValidationSchema,
   path?: string,
-) {
+): Promise<{
+  data: Lead | null;
+  message: string;
+}> {
   const leadId = cookies().get(COOKIE_LEAD_ID)?.value;
 
   if (!leadId) {
@@ -92,14 +98,17 @@ export async function updateLead(
     return { message: "Successfully update lead", data: lead };
   } catch (e) {
     console.error(e);
-    return { message: "Error updating lead" };
+    return { message: "Error updating lead", data: null };
   }
 }
 
 export async function setContactLead(
   data: ContactValidationSchema,
   path?: string,
-) {
+): Promise<{
+  data: Lead | null;
+  message: string;
+}> {
   // validate data
   const validatedData = contactFormSchema.parse(data);
 
@@ -138,14 +147,17 @@ export async function setContactLead(
     return { message: "Successfully added contact", data: lead };
   } catch (e) {
     console.error(e);
-    return { message: "Error adding contact lead" };
+    return { message: "Error adding contact lead", data: null };
   }
 }
 
 export async function setBusinessLead(
   data: BusinessValidationSchema,
   path?: string,
-) {
+): Promise<{
+  data: Lead | null;
+  message: string;
+}> {
   const leadId = cookies().get(COOKIE_LEAD_ID)?.value;
 
   if (!leadId) {
@@ -183,14 +195,17 @@ export async function setBusinessLead(
     return { message: "Successfully added business info", data: lead };
   } catch (e) {
     console.error(e);
-    return { message: "Error setting business lead" };
+    return { message: "Error setting business lead", data: null };
   }
 }
 
 export async function setFinancialLead(
   data: FinancialValidationSchema,
   path?: string,
-) {
+): Promise<{
+  data: Lead | null;
+  message: string;
+}> {
   const leadId = cookies().get(COOKIE_LEAD_ID)?.value;
 
   if (!leadId) {
@@ -226,6 +241,6 @@ export async function setFinancialLead(
     return { message: "Successfully added business", data: lead };
   } catch (e) {
     console.error(e);
-    return { message: "Error setting business lead" };
+    return { message: "Error setting business lead", data: null };
   }
 }
