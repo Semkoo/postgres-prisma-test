@@ -2,9 +2,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Inter } from "next/font/google";
 import Navbar from "@/components/Navbar";
-import { getServerSession } from "next-auth";
 import SessionProvider from "@/core/Auth/SessionProvider";
-import { authOptions } from "./api/auth/[...nextauth]/route";
 
 // export const metadata = {
 //   title: "Vercel Postgres Demo with Prisma",
@@ -23,8 +21,6 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // const session = await getServerSession(authOptions);
-
   return (
     <html lang="en">
       <body
@@ -33,10 +29,10 @@ export default async function RootLayout({
           inter.variable,
         )}
       >
-        {/* <SessionProvider session={session}> */}
-        <Navbar />
-        {children}
-        {/* </SessionProvider> */}
+        <SessionProvider>
+          <Navbar />
+          {children}
+        </SessionProvider>
       </body>
     </html>
   );
