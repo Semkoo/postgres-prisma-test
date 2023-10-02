@@ -1,7 +1,6 @@
 import MaxWidthWrapper from "~/components/MaxWidthWrapper";
 import { Separator } from "~/components/ui/separator";
 import Stepper from "~/core/GetStarted/Stepper";
-import React from "react";
 
 export default function layout({ children }: { children: React.ReactNode }) {
   return (
