@@ -23,7 +23,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerSession(authOptions);
+  // const session = await getServerSession(authOptions);
 
   return (
     <html lang="en">
@@ -33,10 +33,10 @@ export default async function RootLayout({
           inter.variable,
         )}
       >
-        <SessionProvider session={session}>
-          <Navbar />
-          {children}
-        </SessionProvider>
+        {/* <SessionProvider session={session}> */}
+        <Navbar />
+        {children}
+        {/* </SessionProvider> */}
       </body>
     </html>
   );
