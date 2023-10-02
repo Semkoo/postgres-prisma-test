@@ -1,8 +1,8 @@
-import prisma from "../lib/prisma";
+import prismaORM from "./prismaORM";
 
 async function main() {
   const response = await Promise.all([
-    prisma.user.upsert({
+    prismaORM.user.upsert({
       where: { email: "rauchg@vercel.com" },
       update: {},
       create: {
@@ -12,7 +12,7 @@ async function main() {
           "https://pbs.twimg.com/profile_images/1576257734810312704/ucxb4lHy_400x400.jpg",
       },
     }),
-    prisma.user.upsert({
+    prismaORM.user.upsert({
       where: { email: "lee@vercel.com" },
       update: {},
       create: {
@@ -22,7 +22,7 @@ async function main() {
           "https://pbs.twimg.com/profile_images/1587647097670467584/adWRdqQ6_400x400.jpg",
       },
     }),
-    await prisma.user.upsert({
+    await prismaORM.user.upsert({
       where: { email: "stey@vercel.com" },
       update: {},
       create: {
@@ -37,10 +37,10 @@ async function main() {
 }
 main()
   .then(async () => {
-    await prisma.$disconnect();
+    await prismaORM.$disconnect();
   })
   .catch(async (e) => {
     console.error(e);
-    await prisma.$disconnect();
+    await prismaORM.$disconnect();
     process.exit(1);
   });
