@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -13,80 +13,117 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useForm } from "react-hook-form";
+import { useForm, useFormContext } from "react-hook-form";
+import Link from "next/link";
+import { FinancialValidationSchema, financialFormSchema } from "./types";
+import { useTransition } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { setFinancialLead } from "./actions";
 
-const formSchema = z.object({
-  businessIncomePerMonth: z
-    .number()
-    .min(1, { message: "Business name is required" }),
-  businessTaxPercentage: z
-    .number()
-    .min(1, { message: "Business city is required" }),
-});
+const initialState: FinancialValidationSchema = {
+  businessIncomePerMonth: 0,
+  businessTaxPercentage: 0,
+};
 
-type ValidationSchema = z.infer<typeof formSchema>;
+export const FinancialFields = () => {
+  const form = useFormContext();
 
+  return (
+    <div className="mb-6 grid gap-6 md:grid-cols-2">
+      <FormField
+        control={form.control}
+        name="businessIncomePerMonth"
+        render={({ field: { onChange, ...rest } }) => (
+          <FormItem>
+            <FormLabel>Business Income Per Month</FormLabel>
+            <FormControl>
+              <Input
+                type="number"
+                placeholder="0"
+                {...rest}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  const number = Number(value);
+                  onChange(number);
+                }}
+              />
+            </FormControl>
 
+            <FormMessage />
+          </FormItem>
+        )}
+      />
 
+      <FormField
+        control={form.control}
+        name="businessTaxPercentage"
+        render={({ field: { onChange, ...rest } }) => (
+          <FormItem>
+            <FormLabel>Business Tax Percentage</FormLabel>
+            <FormControl>
+              <Input
+                type="number"
+                placeholder="0"
+                {...rest}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  const number = Number(value);
+                  onChange(number);
+                }}
+              />
+            </FormControl>
 
-export function FinancialForm() {
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    </div>
+  );
+};
+
+export function FinancialForm({
+  businessFinancialInfo = initialState,
+}: {
+  businessFinancialInfo?: FinancialValidationSchema;
+}) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const [isPending, startTransition] = useTransition();
+
   // 1. Define your form.
-  const form = useForm<ValidationSchema>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      businessIncomePerMonth: 0,
-      businessTaxPercentage: 0,
-    },
+  const form = useForm<FinancialValidationSchema>({
+    resolver: zodResolver(financialFormSchema),
+    defaultValues: businessFinancialInfo,
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: ValidationSchema) {
-    console.log(values);
+  function onSubmit(values: FinancialValidationSchema) {
+    startTransition(async () => {
+      try {
+        await setFinancialLead(values, pathname);
+        router.push("/get-started/confirmation");
+      } catch (error) {
+        console.log(error);
+      }
+    });
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="mb-6 grid gap-6 md:grid-cols-2">
-          <FormField
-            control={form.control}
-            name="businessIncomePerMonth"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Business Income Per Month</FormLabel>
-                <FormControl>
-                  <Input placeholder="0" {...field} />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="businessTaxPercentage"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Business Tax Percentage</FormLabel>
-                <FormControl>
-                  <Input placeholder="0" {...field} />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
+        <FinancialFields />
         <div className="flex gap-6">
-          <Button
-            variant="secondary"
-            className="w-full"
-            onClick={() => form.reset}
+          <Link
+            href="/get-started/business"
+            className={buttonVariants({
+              variant: "secondary",
+              className: "w-full",
+            })}
           >
             Previous Step: Business Info
-          </Button>
-          <Button type="submit" className="w-full">
+          </Link>
+
+          <Button type="submit" className="w-full" disabled={isPending}>
             Next Step: Confirmation
           </Button>
         </div>

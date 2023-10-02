@@ -41,16 +41,26 @@ model Account {
   @@unique([provider, providerAccountId])
 }
 
-model GetStartedLead {
-  id                     String @id @default(cuid())
+enum EnumStepStatus {
+  CONTACT_INFO
+  BUSINESS_INFO
+  FINANCIAL_INFO
+  CONFIRMATION
+}
+
+model Lead {
+  id                     String         @id @default(cuid())
   firstName              String
   lastName               String
-  businessName           String
-  businessCity           String
-  businessWebsite        String
-  businessEmail          String
-  businessIncomePerMonth Int
-  businessTaxPercentage  Int
+  email                  String         @unique
+  phone                  String
+  businessName           String?
+  businessCity           String?
+  businessWebsite        String?
+  businessEmail          String?
+  businessIncomePerMonth Int?
+  businessTaxPercentage  Int?
+  stepStatus             EnumStepStatus
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

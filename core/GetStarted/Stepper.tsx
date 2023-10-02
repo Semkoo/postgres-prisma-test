@@ -24,10 +24,31 @@ export const STEPS = [
   },
 ];
 
+const Linked = ({
+  href,
+  children,
+  className,
+}: {
+  href?: string;
+  children: React.ReactNode;
+  className?: string;
+}) => {
+  if (!href) {
+    return <div className={className}>{children}</div>;
+  }
+
+  return (
+    <Link href={href} className={className}>
+      {children}
+    </Link>
+  );
+};
+
 export default function Stepper() {
   const pathname = usePathname();
-
-  const currentStep = STEPS.findIndex((step) => step.href === pathname);
+  const currentStep = pathname.includes("thank-you")
+    ? STEPS.length - 1
+    : STEPS.findIndex((step) => step.href === pathname);
 
   return (
     <ol className="flex w-full items-center py-10 text-center text-sm font-medium text-gray-500 dark:text-gray-400 sm:text-base">
@@ -35,8 +56,8 @@ export default function Stepper() {
         const isCurrentStep = index <= currentStep;
 
         return (
-          <Link
-            href={step.href}
+          <Linked
+            href={isCurrentStep ? step.href : undefined}
             key={step.label}
             className={cn(
               "flex items-center",
@@ -66,7 +87,7 @@ export default function Stepper() {
                 {step.label.split(" ")[1] || ""}
               </span>
             </li>
-          </Link>
+          </Linked>
         );
       })}
     </ol>
