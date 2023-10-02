@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2017",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
+    "checkJs": true,
     "skipLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
@@ -25,10 +26,12 @@
   },
   "include": [
     "next-env.d.ts",
+    ".next/types/**/*.ts",
+    "prisma/seed.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts",
-    "prisma/seed.ts"
+    "**/*.cjs",
+    "**/*.mjs"
   ],
   "exclude": ["node_modules"]
 }
