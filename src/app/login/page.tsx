@@ -15,13 +15,6 @@ export const metadata: Metadata = {
 };
 
 export default async function LoginPage() {
-  const session = await getServerSession(authOptions);
-  const user = session?.user;
-
-  if (user) {
-    redirect("/dashboard");
-  }
-
   return (
     <MaxWidthWrapper className="relative flex min-h-screen flex-col items-center justify-center">
       <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">

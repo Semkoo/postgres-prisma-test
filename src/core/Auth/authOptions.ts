@@ -5,6 +5,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { compare } from "bcrypt";
 import { env } from "~/env.mjs";
+import prismaORM from "~/prismaORM";
 /**
  * Options for NextAuth.js used to configure adapters, providers, callbacks, etc.
  *
@@ -18,40 +19,48 @@ export const authOptions: NextAuthOptions = {
     signIn: "/login",
   },
   callbacks: {
-    session: ({ session, user }) => {
-      console.log("Session Callback", { session });
-
-      return {
-        ...session,
-        user: {
-          ...session.user,
-          id: user?.id,
-          email: user?.email,
-          name: user?.name,
-          image: user?.image,
-        },
-      };
-    },
-    jwt: ({ token, user }) => {
-      // console.log("JWT Callback", { token });
-      console.log("JWT Callback", { user });
-      if (user) {
+    async session({ token, session }) {
+      if (token) {
         return {
-          ...token,
-          id: user?.id,
-          email: user?.email,
-          name: user?.name,
-          image: user?.image,
+          ...session,
+          user: {
+            ...session.user,
+            id: token.id,
+            email: token.email,
+            name: token.name,
+            image: token.picture,
+          },
         };
       }
-      return token;
+
+      return session;
+    },
+    async jwt({ token, user }) {
+      const dbUser = await prismaORM.user.findFirst({
+        where: {
+          email: token.email,
+        },
+      });
+
+      if (!dbUser) {
+        if (user) {
+          token.id = user?.id;
+        }
+        return token;
+      }
+
+      return {
+        id: dbUser.id,
+        name: dbUser.name,
+        email: dbUser.email,
+        picture: dbUser.image,
+      };
     },
   },
 
   adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
-      name: "Sign in",
       credentials: {
         email: {
           label: "Email",
@@ -60,6 +69,8 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
+        // console.log(credentials);
+
         if (!credentials?.email || !credentials.password) {
           return null;
         }
@@ -69,6 +80,8 @@ export const authOptions: NextAuthOptions = {
             email: credentials.email,
           },
         });
+
+        console.log(user);
 
         if (!user) {
           return null;

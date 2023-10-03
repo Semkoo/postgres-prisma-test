@@ -4,12 +4,11 @@ import { buttonVariants } from "./ui/button";
 import { LoginButton } from "~/core/Auth/Auth";
 import { cn } from "~/lib/utils";
 import UserAccountNav from "~/core/Auth/UserAccountNav";
-import { getServerSession } from "next-auth";
-import { authOptions } from "~/core/Auth/authOptions";
+
+import { getCurrentUser } from "~/core/Auth/session";
 
 const Navbar = async () => {
-  const session = await getServerSession(authOptions);
-  const user = session?.user;
+  const user = await getCurrentUser();
 
   return (
     <nav className="sticky inset-x-0 top-0 z-30 h-14 w-full border-b border-gray-200 bg-white/75 backdrop-blur-lg transition-all">

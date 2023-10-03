@@ -1,19 +1,46 @@
-// Without a defined matcher, this one line applies next-auth
-// to the entire project
-export { default } from "next-auth/middleware";
+import { getToken } from "next-auth/jwt";
+import { withAuth } from "next-auth/middleware";
+import { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
-// Applies next-auth only to matching routes - can be regex
-// Ref: https://nextjs.org/docs/app/building-your-application/routing/middleware#matcher
+export default withAuth(
+  async function middleware(req) {
+    // @ts-ignore
+    const token = await getToken({ req });
+    const isAuth = !!token;
+    const isAuthPage = req.nextUrl.pathname.startsWith("/login");
+
+    if (isAuthPage) {
+      if (isAuth) {
+        return NextResponse.redirect(new URL("/dashboard", req.url));
+      }
+
+      return null;
+    }
+
+    if (!isAuth) {
+      let from = req.nextUrl.pathname;
+      if (req.nextUrl.search) {
+        from += req.nextUrl.search;
+      }
+
+      return NextResponse.redirect(
+        new URL(`/login?from=${encodeURIComponent(from)}`, req.url),
+      );
+    }
+  },
+  {
+    callbacks: {
+      async authorized() {
+        // This is a work-around for handling redirect on auth pages.
+        // We return true here so that the middleware function above
+        // is always called.
+        return true;
+      },
+    },
+  },
+);
+
 export const config = {
-  matcher: [
-    "/dashboard",
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
-    // "/((?!api|_next/static|_next/image|favicon.ico).*)",
-  ],
+  matcher: ["/dashboard/:path*", "/login", "/get-started"],
 };
