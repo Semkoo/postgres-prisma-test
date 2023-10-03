@@ -15,7 +15,7 @@ import {
 import { Input } from "~/components/ui/input";
 import { UserAuthValidationSchema, userAuthSchema } from "./types";
 import { useToast } from "~/components/ui/use-toast";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function UserAuthLoginForm({
   isGitHubLoading,
@@ -27,7 +27,6 @@ export default function UserAuthLoginForm({
   const { toast } = useToast();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const searchParams = useSearchParams();
 
   const form = useForm<UserAuthValidationSchema>({
     resolver: zodResolver(userAuthSchema),
@@ -50,7 +49,7 @@ export default function UserAuthLoginForm({
           throw new Error("Sign in failed.");
         }
 
-        router.push(searchParams?.get("from") || "/dashboard");
+        router.push("/dashboard");
       } catch (error) {
         toast({
           title: "Something went wrong.",
