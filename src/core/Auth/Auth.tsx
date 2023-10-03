@@ -5,7 +5,7 @@ import { signIn, signOut } from "next-auth/react";
 
 export const LoginButton = () => {
   return (
-    <Button variant="ghost" size="sm" onClick={() => signIn()}>
+    <Button variant="ghost" size="sm" onClick={async () => await signIn()}>
       Sign in
     </Button>
   );
@@ -13,7 +13,7 @@ export const LoginButton = () => {
 
 export const LogoutButton = () => {
   return (
-    <Button variant="ghost" size="sm" onClick={() => signOut()}>
+    <Button variant="ghost" size="sm" onClick={async () => await signOut()}>
       Sign Out
     </Button>
   );

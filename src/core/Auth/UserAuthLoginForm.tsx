@@ -16,6 +16,7 @@ import { Input } from "~/components/ui/input";
 import { UserAuthValidationSchema, userAuthSchema } from "./types";
 import { useToast } from "~/components/ui/use-toast";
 import { useRouter } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 export default function UserAuthLoginForm({
   isGitHubLoading,
@@ -50,6 +51,7 @@ export default function UserAuthLoginForm({
         }
 
         router.push("/dashboard");
+        revalidatePath("/dashboard");
       } catch (error) {
         toast({
           title: "Something went wrong.",

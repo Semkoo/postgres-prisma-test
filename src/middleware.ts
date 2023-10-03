@@ -6,7 +6,7 @@ export { default } from "next-auth/middleware";
 // Ref: https://nextjs.org/docs/app/building-your-application/routing/middleware#matcher
 export const config = {
   matcher: [
-    "/dashboard/:path*",
+    "/dashboard",
     /*
      * Match all request paths except for the ones starting with:
      * - api (API routes)
