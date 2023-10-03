@@ -7,7 +7,12 @@ await import("./src/env.mjs");
 /** @type {import("next").NextConfig} */
 const config = {
   images: {
-    domains: ["pbs.twimg.com"],
+    domains: [
+      "pbs.twimg.com",
+      "avatars.githubusercontent.com",
+      "github.com",
+      "ui-avatars.com",
+    ],
   },
   experimental: {
     serverActions: true,

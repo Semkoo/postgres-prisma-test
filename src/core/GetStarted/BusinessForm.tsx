@@ -18,6 +18,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { setBusinessLead } from "./actions";
 import Link from "next/link";
+import { toast, useToast } from "~/components/ui/use-toast";
 
 const initialState: BusinessValidationSchema = {
   businessName: "",
@@ -97,6 +98,7 @@ export function BusinessForm({
 }: {
   business?: BusinessValidationSchema;
 }) {
+  const { toast } = useToast();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -112,10 +114,19 @@ export function BusinessForm({
   function onSubmit(values: BusinessValidationSchema) {
     startTransition(async () => {
       try {
-        await setBusinessLead(values, pathname);
+        const { data } = await setBusinessLead(values, pathname);
+        if (data === null) {
+          throw new Error("Failed to update lead.");
+        }
+
         router.push("/get-started/financial");
       } catch (error) {
-        console.log(error);
+        toast({
+          title: "Something went wrong.",
+          description: error instanceof Error ? error.message : "Unknown error",
+          variant: "destructive",
+        });
+        router.refresh();
       }
     });
   }

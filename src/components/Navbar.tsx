@@ -3,11 +3,13 @@ import MaxWidthWrapper from "./MaxWidthWrapper";
 import { buttonVariants } from "./ui/button";
 import { LoginButton } from "~/core/Auth/Auth";
 import { cn } from "~/lib/utils";
-// import UserAccountNav from "./UserAccountNav";
-// import MobileNav from "./MobileNav";
+import UserAccountNav from "~/core/Auth/UserAccountNav";
+import { getServerSession } from "next-auth";
+import { authOptions } from "~/core/Auth/authOptions";
 
-const Navbar = () => {
-  const user = null;
+const Navbar = async () => {
+  const session = await getServerSession(authOptions);
+  const user = session?.user;
 
   return (
     <nav className="sticky inset-x-0 top-0 z-30 h-14 w-full border-b border-gray-200 bg-white/75 backdrop-blur-lg transition-all">
@@ -17,62 +19,25 @@ const Navbar = () => {
             <span>Brand.</span>
           </Link>
 
-          {/* <MobileNav isAuth={!!user} /> */}
-
-          <div className="hidden items-center space-x-4 sm:flex">
+          <div className="flex items-center space-x-4 ">
+            <Link
+              href="/get-started"
+              className={cn(
+                buttonVariants({
+                  variant: "ghost",
+                  size: "sm",
+                }),
+              )}
+            >
+              Get Started
+            </Link>
             {!user ? (
-              <>
-                <Link
-                  href="/get-started"
-                  className={cn(
-                    buttonVariants({
-                      variant: "ghost",
-                      size: "sm",
-                    }),
-                  )}
-                >
-                  Get Started
-                </Link>
-                <LoginButton />
-
-                {/* <LoginLink
-                  className={buttonVariants({
-                    variant: "ghost",
-                    size: "sm",
-                  })}
-                >
-                  Sign in
-                </LoginLink> */}
-                {/* <RegisterLink
-                  className={buttonVariants({
-                    size: "sm",
-                  })}
-                >
-                  Get started <ArrowRight className="ml-1.5 h-5 w-5" />
-                </RegisterLink> */}
-              </>
+              <LoginButton />
             ) : (
-              <>
-                <Link
-                  href="/"
-                  className={buttonVariants({
-                    variant: "ghost",
-                    size: "sm",
-                  })}
-                >
-                  Dashboard
-                </Link>
-
-                {/* <UserAccountNav
-                  name={
-                    !user.given_name || !user.family_name
-                      ? "Your Account"
-                      : `${user.given_name} ${user.family_name}`
-                  }
-                  email={user.email ?? ""}
-                  imageUrl={user.picture ?? ""}
-                /> */}
-              </>
+              <UserAccountNav
+                name={user?.name ?? "Your Account"}
+                imageUrl={user?.image ?? ""}
+              />
             )}
           </div>
         </div>

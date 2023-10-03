@@ -1,9 +1,15 @@
+import { Metadata } from "next";
 import { ContactForm } from "~/core/GetStarted/ContactForm";
 import { getLead } from "~/core/GetStarted/actions";
 
 // Prisma does not support Edge without the Data Proxy currently
 // export const runtime = 'edge'
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Get Started - Contact Info",
+  description: "Get started with your application - Contact Info",
+};
 
 export default async function ContactPage() {
   const { data } = await getLead();

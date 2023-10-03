@@ -14,6 +14,7 @@ import { ConfirmationValidationSchema, confirmationFormSchema } from "./types";
 import { usePathname, useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { updateLead } from "./actions";
+import { useToast } from "~/components/ui/use-toast";
 
 const initialState: ConfirmationValidationSchema = {
   businessIncomePerMonth: 0,
@@ -33,6 +34,7 @@ export function ConfirmationForm({
 }: {
   lead?: ConfirmationValidationSchema;
 }) {
+  const { toast } = useToast();
   const router = useRouter();
   const pathname = usePathname();
   const [isPending, startTransition] = useTransition();
@@ -47,10 +49,20 @@ export function ConfirmationForm({
   function onSubmit(values: ConfirmationValidationSchema) {
     startTransition(async () => {
       try {
-        await updateLead(values, pathname);
-        router.push("/get-started/thank-you");
+        const { data } = await updateLead(values, pathname);
+
+        if (data === null) {
+          throw new Error("Failed to update lead.");
+        }
+
+        router.push(`/get-started/thank-you/${data?.id}`);
       } catch (error) {
-        console.log(error);
+        toast({
+          title: "Something went wrong.",
+          description: error instanceof Error ? error.message : "Unknown error",
+          variant: "destructive",
+        });
+        router.refresh();
       }
     });
   }

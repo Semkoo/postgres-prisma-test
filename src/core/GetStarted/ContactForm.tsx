@@ -17,6 +17,7 @@ import { usePathname, useRouter } from "next/navigation";
 
 import { ContactValidationSchema, contactFormSchema } from "./types";
 import { setContactLead } from "./actions";
+import { useToast } from "~/components/ui/use-toast";
 
 const initialState: ContactValidationSchema = {
   firstName: "",
@@ -95,6 +96,7 @@ export function ContactForm({
 }: {
   contact?: ContactValidationSchema;
 }) {
+  const { toast } = useToast();
   const router = useRouter();
   const pathname = usePathname();
   const [isPending, startTransition] = useTransition();
@@ -109,10 +111,20 @@ export function ContactForm({
   function onSubmit(values: ContactValidationSchema) {
     startTransition(async () => {
       try {
-        await setContactLead(values, pathname);
+        const data = await setContactLead(values, pathname);
+        if (data === null) {
+          throw new Error("Failed to update lead.");
+        }
+
         router.push("/get-started/business");
       } catch (error) {
-        console.log(error);
+        toast({
+          title: "Something went wrong.",
+          description: error instanceof Error ? error.message : "Unknown error",
+          variant: "destructive",
+        });
+
+        router.refresh();
       }
     });
   }

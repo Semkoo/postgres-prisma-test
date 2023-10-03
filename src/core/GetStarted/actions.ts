@@ -18,12 +18,13 @@ import {
 
 const COOKIE_LEAD_ID = "leadId";
 
-export async function getLead(): Promise<{
+export async function getLead(parsedLeadId?: string): Promise<{
   data: Lead | null;
   message: string;
 }> {
   try {
-    const leadId = cookies().get(COOKIE_LEAD_ID)?.value;
+    const leadId =
+      cookies().get(COOKIE_LEAD_ID)?.value ?? parsedLeadId ?? undefined;
 
     if (!leadId) {
       return {

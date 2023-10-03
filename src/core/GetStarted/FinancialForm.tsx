@@ -1,8 +1,6 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-
 import { Button, buttonVariants } from "~/components/ui/button";
 import {
   Form,
@@ -19,6 +17,7 @@ import { FinancialValidationSchema, financialFormSchema } from "./types";
 import { useTransition } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { setFinancialLead } from "./actions";
+import { useToast } from "~/components/ui/use-toast";
 
 const initialState: FinancialValidationSchema = {
   businessIncomePerMonth: 0,
@@ -86,6 +85,7 @@ export function FinancialForm({
 }: {
   businessFinancialInfo?: FinancialValidationSchema;
 }) {
+  const { toast } = useToast();
   const router = useRouter();
   const pathname = usePathname();
   const [isPending, startTransition] = useTransition();
@@ -100,10 +100,21 @@ export function FinancialForm({
   function onSubmit(values: FinancialValidationSchema) {
     startTransition(async () => {
       try {
-        await setFinancialLead(values, pathname);
+        const { data } = await setFinancialLead(values, pathname);
+
+        if (data === null) {
+          throw new Error("Failed to update lead.");
+        }
+
         router.push("/get-started/confirmation");
       } catch (error) {
-        console.log(error);
+        toast({
+          title: "Something went wrong.",
+          description: error instanceof Error ? error.message : "Unknown error",
+          variant: "destructive",
+        });
+
+        router.refresh();
       }
     });
   }

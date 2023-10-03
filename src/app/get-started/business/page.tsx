@@ -3,8 +3,14 @@ import { getLead } from "~/core/GetStarted/actions";
 import { EnumStepStatus } from "@prisma/client";
 import { redirect } from "next/navigation";
 import React from "react";
+import { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Get Started - Business Info",
+  description: "Get started with your application - Business Info",
+};
 
 export default async function BusinessPage() {
   const { data } = await getLead();
