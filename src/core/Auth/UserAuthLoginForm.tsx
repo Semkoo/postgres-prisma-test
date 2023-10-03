@@ -16,6 +16,7 @@ import { Input } from "~/components/ui/input";
 import { UserAuthValidationSchema, userAuthSchema } from "./types";
 import { useToast } from "~/components/ui/use-toast";
 import { useRouter, useSearchParams } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 export default function UserAuthLoginForm({
   isGitHubLoading,
@@ -57,7 +58,7 @@ export default function UserAuthLoginForm({
       });
     }
 
-    router.push(searchParams?.get("from") || "/dashboard");
+    router.refresh();
   }
 
   return (
