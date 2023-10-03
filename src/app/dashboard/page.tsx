@@ -1,5 +1,6 @@
-import React from "react";
 import MaxWidthWrapper from "~/components/MaxWidthWrapper";
+
+export const dynamic = "force-dynamic";
 
 export default function DashboardPage() {
   return (

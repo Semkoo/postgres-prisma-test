@@ -7,6 +7,8 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "~/core/Auth/authOptions";
 import { redirect } from "next/navigation";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Login",
   description: "Login to your account",
